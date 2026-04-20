@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <typeAliases>
+        <typeAlias type="entities.Client" alias="Client"/>
+        <typeAlias type="entities.Trainer" alias="Trainer"/>
+        <typeAlias type="entities.Gym" alias="Gym"/>
+    </typeAliases>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="MANAGED"/>
+            <dataSource type="JNDI">
+                <property name="data_source" value="java:/Lab1DataSource"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="mybatis/TrainerMapper.xml"/>
+        <mapper resource="mybatis/GymMapper.xml"/>
+        <mapper resource="mybatis/ClientMapper.xml"/>
+    </mappers>
+</configuration>

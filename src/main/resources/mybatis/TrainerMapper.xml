@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.TrainerMapper">
+
+    <resultMap id="BaseResultMap" type="entities.Trainer">
+        <id column="ID" jdbcType="BIGINT" property="id" />
+        <result column="NAME" jdbcType="VARCHAR" property="name" />
+        <!-- gym field is not mapped here; it will be null unless explicitly loaded via association -->
+    </resultMap>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from TRAINER
+        where ID = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="entities.Trainer" useGeneratedKeys="true">
+        insert into TRAINER (NAME, GYM_ID)
+        values (#{name,jdbcType=VARCHAR}, #{gym.id,jdbcType=BIGINT})
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="entities.Trainer">
+        update TRAINER
+        set NAME = #{name,jdbcType=VARCHAR},
+            GYM_ID = #{gym.id,jdbcType=BIGINT}
+        where ID = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select ID, NAME
+        from TRAINER
+        where ID = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select ID, NAME
+        from TRAINER
+    </select>
+
+    <!-- Custom queries used in GymTrainersMyBatis -->
+    <select id="findByGymId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select ID, NAME
+        from TRAINER
+        where GYM_ID = #{gymId,jdbcType=BIGINT}
+    </select>
+
+    <select id="findByNameAndGym" resultMap="BaseResultMap">
+        select ID, NAME
+        from TRAINER
+        where NAME = #{name,jdbcType=VARCHAR} and GYM_ID = #{gymId,jdbcType=BIGINT}
+    </select>
+
+    <!-- Additional method from the original interface -->
+    <select id="selectByGym" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select ID, NAME
+        from TRAINER
+        where GYM_ID = #{gymId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

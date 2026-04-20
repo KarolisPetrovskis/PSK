@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Clients (MyBatis)</title>
+</h:head>
+<h:body>
+    <h1>Clients (MyBatis)</h1>
+    <h:form>
+        <h:panelGrid columns="2">
+            <h:outputLabel for="name" value="Client Name:" />
+            <h:inputText id="name" value="#{clientsMyBatis.clientToCreate.name}" />
+
+            <h:commandButton value="Create Client" action="#{clientsMyBatis.createClient}" />
+        </h:panelGrid>
+    </h:form>
+
+    <h2>All Clients</h2>
+    <h:dataTable value="#{clientsMyBatis.allClients}" var="client">
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            #{client.id}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Name</f:facet>
+            #{client.name}
+        </h:column>
+        <h:column>
+            <h:link outcome="/mybatis/clientTrainers" value="Manage Trainers">
+                <f:param name="clientId" value="#{client.id}" />
+            </h:link>
+        </h:column>
+    </h:dataTable>
+    <h:link outcome="/index" value="Back to Home" />
+</h:body>
+</html>

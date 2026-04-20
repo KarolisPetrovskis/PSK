@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Trainers for Gym</title>
+</h:head>
+<h:body>
+    <h1>Trainers</h1>
+
+    <h:panelGroup rendered="#{not empty facesContext.externalContext.requestParameterMap.error}">
+        <div style="color:red;">Trainer with the same name already exists in this gym!</div>
+    </h:panelGroup>
+
+    <h:form>
+        <!-- Plain HTML hidden input – preserves gymId without evaluating gym.id -->
+        <input type="hidden" name="gymId" value="#{param.gymId}" />
+
+        <h2>Add New Trainer</h2>
+        <h:panelGrid columns="2">
+            <h:outputLabel value="Name:"/>
+            <h:inputText value="#{gymTrainers.trainerToCreate.name}" required="true"/>
+        </h:panelGrid>
+        <h:commandButton value="Create Trainer" action="#{gymTrainers.createTrainer}"/>
+    </h:form>
+
+    <h2>Trainers at #{gymTrainers.gym.name}</h2>
+    <h:dataTable value="#{gymTrainers.gym.trainers}" var="trainer" border="1" rendered="#{not empty gymTrainers.gym.trainers}">
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            #{trainer.id}
+        </h:column>
+        <h:column>
+            <f:facet name="header">Name</f:facet>
+            #{trainer.name}
+        </h:column>
+    </h:dataTable>
+
+    <br/>
+    <h:link value="Back to Gyms" outcome="gyms"/>
+</h:body>
+</html>
