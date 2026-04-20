@@ -30,7 +30,7 @@ public class Gyms {
     @Transactional
     public String createGym() {
         this.gymDAO.persist(gymToCreate);
-        return "index?faces-redirect=true";
+        return "gyms?faces-redirect=true";
     }
 
     private void loadAllGyms() {
