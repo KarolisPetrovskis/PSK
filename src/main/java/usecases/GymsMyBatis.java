@@ -1,6 +1,6 @@
 package usecases;
 
-import entities.Gym;
+import mybatis.model.Gym;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;

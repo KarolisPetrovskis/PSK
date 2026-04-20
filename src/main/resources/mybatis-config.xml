@@ -7,9 +7,9 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
     <typeAliases>
-        <typeAlias type="entities.Client" alias="Client"/>
-        <typeAlias type="entities.Trainer" alias="Trainer"/>
-        <typeAlias type="entities.Gym" alias="Gym"/>
+        <typeAlias type="mybatis.model.Client" alias="Client"/>
+        <typeAlias type="mybatis.model.Trainer" alias="Trainer"/>
+        <typeAlias type="mybatis.model.Gym" alias="Gym"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">

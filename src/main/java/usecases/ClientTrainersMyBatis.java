@@ -1,7 +1,7 @@
 package usecases;
 
-import entities.Client;
-import entities.Trainer;
+import mybatis.model.Client;
+import mybatis.model.Trainer;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.inject.Model;
 import jakarta.faces.context.FacesContext;

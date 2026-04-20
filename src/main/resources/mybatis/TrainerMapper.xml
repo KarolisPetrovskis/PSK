@@ -2,58 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.TrainerMapper">
 
-    <resultMap id="BaseResultMap" type="entities.Trainer">
-        <id column="ID" jdbcType="BIGINT" property="id" />
-        <result column="NAME" jdbcType="VARCHAR" property="name" />
-        <!-- gym field is not mapped here; it will be null unless explicitly loaded via association -->
+    <resultMap id="BaseResultMap" type="Trainer">
+        <id column="ID" property="id" />
+        <result column="NAME" property="name" />
+        <!-- GYM_ID will be mapped to gym.id via setter -->
+        <result column="GYM_ID" property="gym.id" />
     </resultMap>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from TRAINER
-        where ID = #{id,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="long">
+        delete from TRAINER where ID = #{id}
     </delete>
 
-    <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="entities.Trainer" useGeneratedKeys="true">
-        insert into TRAINER (NAME, GYM_ID)
-        values (#{name,jdbcType=VARCHAR}, #{gym.id,jdbcType=BIGINT})
+    <insert id="insert" keyColumn="ID" keyProperty="id" useGeneratedKeys="true">
+        insert into TRAINER (NAME, GYM_ID) values (#{name}, #{gym.id})
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="entities.Trainer">
-        update TRAINER
-        set NAME = #{name,jdbcType=VARCHAR},
-            GYM_ID = #{gym.id,jdbcType=BIGINT}
-        where ID = #{id,jdbcType=BIGINT}
+    <update id="updateByPrimaryKey" parameterType="Trainer">
+        update TRAINER set NAME = #{name}, GYM_ID = #{gym.id} where ID = #{id}
     </update>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select ID, NAME
-        from TRAINER
-        where ID = #{id,jdbcType=BIGINT}
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select ID, NAME, GYM_ID from TRAINER where ID = #{id}
     </select>
 
     <select id="selectAll" resultMap="BaseResultMap">
-        select ID, NAME
-        from TRAINER
+        select ID, NAME, GYM_ID from TRAINER
     </select>
 
-    <!-- Custom queries used in GymTrainersMyBatis -->
-    <select id="findByGymId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select ID, NAME
-        from TRAINER
-        where GYM_ID = #{gymId,jdbcType=BIGINT}
+    <select id="findByGymId" resultMap="BaseResultMap">
+        select ID, NAME, GYM_ID from TRAINER where GYM_ID = #{gymId}
     </select>
 
     <select id="findByNameAndGym" resultMap="BaseResultMap">
-        select ID, NAME
-        from TRAINER
-        where NAME = #{name,jdbcType=VARCHAR} and GYM_ID = #{gymId,jdbcType=BIGINT}
+        select ID, NAME, GYM_ID from TRAINER
+        where NAME = #{name} and GYM_ID = #{gymId}
     </select>
 
-    <!-- Additional method from the original interface -->
-    <select id="selectByGym" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select ID, NAME
-        from TRAINER
-        where GYM_ID = #{gymId,jdbcType=BIGINT}
+    <select id="selectByGym" resultMap="BaseResultMap">
+        select ID, NAME, GYM_ID from TRAINER where GYM_ID = #{gymId}
     </select>
 
 </mapper>

@@ -1,6 +1,6 @@
 package mybatis;
 
-import entities.Client;
+import mybatis.model.Client;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
