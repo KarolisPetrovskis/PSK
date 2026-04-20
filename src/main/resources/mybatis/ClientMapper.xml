@@ -1,65 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.ClientMapper">
+
     <resultMap id="BaseResultMap" type="entities.Client">
         <id column="ID" jdbcType="BIGINT" property="id" />
         <result column="NAME" jdbcType="VARCHAR" property="name" />
     </resultMap>
-    <resultMap id="ClientWithTrainersResultMap" type="entities.Client">
-        <id column="ID" jdbcType="BIGINT" property="id" />
-        <result column="NAME" jdbcType="VARCHAR" property="name" />
-        <collection property="trainers" column="ID" ofType="entities.Trainer" select="selectTrainersForClient"/>
+
+    <resultMap id="ClientWithTrainersResultMap" type="entities.Client" extends="BaseResultMap">
+        <collection property="trainers" column="ID" ofType="entities.Trainer"
+                    select="selectTrainersForClient"/>
     </resultMap>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from CLIENT
-        where ID = #{id,jdbcType=BIGINT}
+        delete from CLIENT where ID = #{id,jdbcType=BIGINT}
     </delete>
+
     <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="entities.Client" useGeneratedKeys="true">
-        insert into CLIENT (NAME)
-        values (#{name,jdbcType=VARCHAR})
+        insert into CLIENT (NAME) values (#{name,jdbcType=VARCHAR})
     </insert>
+
     <update id="updateByPrimaryKey" parameterType="entities.Client">
-        update CLIENT
-        set NAME = #{name,jdbcType=VARCHAR}
-        where ID = #{id,jdbcType=BIGINT}
+        update CLIENT set NAME = #{name,jdbcType=VARCHAR} where ID = #{id,jdbcType=BIGINT}
     </update>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select ID, NAME
-        from CLIENT
-        where ID = #{id,jdbcType=BIGINT}
+        select ID, NAME from CLIENT where ID = #{id,jdbcType=BIGINT}
     </select>
+
     <select id="selectByPrimaryKeyWithTrainers" parameterType="java.lang.Long" resultMap="ClientWithTrainersResultMap">
-        select ID, NAME
-        from CLIENT
-        where ID = #{id,jdbcType=BIGINT}
+        select ID, NAME from CLIENT where ID = #{id,jdbcType=BIGINT}
     </select>
+
     <select id="selectAll" resultMap="BaseResultMap">
-        select ID, NAME
-        from CLIENT
+        select ID, NAME from CLIENT
     </select>
+
     <select id="selectAllWithTrainers" resultMap="ClientWithTrainersResultMap">
-        select ID, NAME
-        from CLIENT
+        select ID, NAME from CLIENT order by ID
     </select>
+
     <select id="selectTrainersForClient" parameterType="java.lang.Long" resultMap="mybatis.TrainerMapper.BaseResultMap">
         select t.ID, t.NAME, t.GYM_ID
         from CLIENT_TRAINER ct
                  join TRAINER t on t.ID = ct.TRAINER_ID
         where ct.CLIENT_ID = #{_parameter,jdbcType=BIGINT}
     </select>
+
     <select id="countClientTrainer" resultType="int">
-        select count(*)
-        from CLIENT_TRAINER
+        select count(*) from CLIENT_TRAINER
         where CLIENT_ID = #{clientId,jdbcType=BIGINT}
           and TRAINER_ID = #{trainerId,jdbcType=BIGINT}
     </select>
+
     <insert id="insertClientTrainer">
         insert into CLIENT_TRAINER (CLIENT_ID, TRAINER_ID)
         values (#{clientId,jdbcType=BIGINT}, #{trainerId,jdbcType=BIGINT})
     </insert>
+
     <delete id="deleteClientTrainer">
         delete from CLIENT_TRAINER
         where CLIENT_ID = #{clientId,jdbcType=BIGINT}
           and TRAINER_ID = #{trainerId,jdbcType=BIGINT}
     </delete>
+
 </mapper>

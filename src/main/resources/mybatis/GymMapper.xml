@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.GymMapper">
+
     <resultMap id="BaseResultMap" type="entities.Gym">
         <id column="ID" jdbcType="BIGINT" property="id" />
         <result column="NAME" jdbcType="VARCHAR" property="name" />
     </resultMap>
+
+    <resultMap id="GymWithTrainersResultMap" type="entities.Gym" extends="BaseResultMap">
+        <collection property="trainers" column="ID" ofType="entities.Trainer"
+                    select="mybatis.TrainerMapper.selectByGym" />
+    </resultMap>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from GYM
-        where ID = #{id,jdbcType=BIGINT}
+        delete from GYM where ID = #{id,jdbcType=BIGINT}
     </delete>
+
     <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="entities.Gym" useGeneratedKeys="true">
-        insert into GYM (NAME)
-        values (#{name,jdbcType=VARCHAR})
+        insert into GYM (NAME) values (#{name,jdbcType=VARCHAR})
     </insert>
+
     <update id="updateByPrimaryKey" parameterType="entities.Gym">
-        update GYM
-        set NAME = #{name,jdbcType=VARCHAR}
-        where ID = #{id,jdbcType=BIGINT}
+        update GYM set NAME = #{name,jdbcType=VARCHAR} where ID = #{id,jdbcType=BIGINT}
     </update>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select ID, NAME
-        from GYM
-        where ID = #{id,jdbcType=BIGINT}
+        select ID, NAME from GYM where ID = #{id,jdbcType=BIGINT}
     </select>
+
     <select id="selectAll" resultMap="BaseResultMap">
-        select ID, NAME
-        from GYM
+        select ID, NAME from GYM
     </select>
+
+    <!-- New method for overview page -->
+    <select id="selectAllWithTrainers" resultMap="GymWithTrainersResultMap">
+        select ID, NAME from GYM order by ID
+    </select>
+
 </mapper>

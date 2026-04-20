@@ -27,4 +27,10 @@ public class GymDAO {
     public Gym update(Gym gym) {
         return em.merge(gym);
     }
+
+    public List<Gym> loadAllWithTrainers() {
+        return em.createQuery(
+                        "SELECT DISTINCT g FROM Gym g LEFT JOIN FETCH g.trainers", Gym.class)
+                .getResultList();
+    }
 }

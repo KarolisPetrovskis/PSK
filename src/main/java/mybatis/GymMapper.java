@@ -15,4 +15,5 @@ public interface GymMapper {
     Gym selectByPrimaryKey(Long id);
     List<Gym> selectAll();
     int updateByPrimaryKey(Gym record);
+    List<Gym> selectAllWithTrainers();
 }

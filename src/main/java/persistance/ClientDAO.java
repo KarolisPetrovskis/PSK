@@ -27,4 +27,10 @@ public class ClientDAO {
     public Client update(Client client) {
         return em.merge(client);
     }
+
+    public List<Client> loadAllWithTrainers() {
+        return em.createQuery(
+                        "SELECT DISTINCT c FROM Client c LEFT JOIN FETCH c.trainers", Client.class)
+                .getResultList();
+    }
 }

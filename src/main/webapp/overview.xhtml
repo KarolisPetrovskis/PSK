@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Fitness Overview</title>
+    <style>
+        .table-container {
+            margin-bottom: 30px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 6px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</h:head>
+<h:body>
+    <h1>System Overview</h1>
+
+    <!-- Gyms and their trainers -->
+    <div class="table-container">
+        <h2>Gyms and Trainers</h2>
+        <h:dataTable value="#{overview.allGymsWithTrainers}" var="gym" border="1">
+            <h:column>
+                <f:facet name="header">Gym Name</f:facet>
+                #{gym.name}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Trainers</f:facet>
+                <h:dataTable value="#{gym.trainers}" var="trainer" border="0">
+                    <h:column>#{trainer.name}</h:column>
+                </h:dataTable>
+            </h:column>
+        </h:dataTable>
+    </div>
+
+    <!-- Clients and their trainers -->
+    <div class="table-container">
+        <h2>Clients and Trainers</h2>
+        <h:dataTable value="#{overview.allClientsWithTrainers}" var="client" border="1">
+            <h:column>
+                <f:facet name="header">Client Name</f:facet>
+                #{client.name}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Trainers</f:facet>
+                <h:dataTable value="#{client.trainers}" var="trainer" border="0">
+                    <h:column>#{trainer.name}</h:column>
+                </h:dataTable>
+            </h:column>
+        </h:dataTable>
+    </div>
+
+    <br/>
+    <h:link value="Back to Index" outcome="index"/>
+</h:body>
+</html>
