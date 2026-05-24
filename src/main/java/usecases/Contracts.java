@@ -182,7 +182,6 @@ public class Contracts implements Serializable {
             clearEditingForm();
         }
 
-        loadData();
         return null;
     }
 
