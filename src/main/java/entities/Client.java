@@ -21,6 +21,9 @@ public class Client {
     @Column(name = "name")
     private String name;
 
+    @OneToOne(mappedBy = "client")
+    private Contract contract;
+
     @ManyToMany
     @JoinTable(name = "client_trainer",
             joinColumns = @JoinColumn(name = "client_id"),

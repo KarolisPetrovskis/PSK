@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Contracts Optimistic Locking Demo</title>
+</h:head>
+<h:body>
+    <h1>Contracts Optimistic Locking Demo</h1>
+
+    <h:form>
+        <h2>Create Contract</h2>
+
+        <h:panelGrid columns="2">
+            <h:outputLabel value="Client:"/>
+            <h:selectOneMenu value="#{contracts.clientIdForNewContract}" required="true">
+                <f:selectItem itemLabel="-- select client --" itemValue="#{null}"/>
+                <f:selectItems value="#{contracts.allClients}"
+                               var="client"
+                               itemValue="#{client.id}"
+                               itemLabel="#{client.name}"/>
+            </h:selectOneMenu>
+
+            <h:outputLabel value="Membership type:"/>
+            <h:inputText value="#{contracts.membershipTypeForNewContract}" required="true"/>
+        </h:panelGrid>
+
+        <h:commandButton value="Create Contract" action="#{contracts.createContract}"/>
+    </h:form>
+
+    <hr/>
+
+    <h:form>
+        <h2>Manual Optimistic Locking Demo</h2>
+
+        <p>
+            Open this page in two different sessions, for example normal browser window
+            and incognito window. Load the same contract in both sessions, save it in one,
+            then try to save the old loaded version in the other.
+        </p>
+
+        <h:panelGrid columns="2">
+            <h:outputLabel value="Contract:"/>
+            <h:selectOneMenu value="#{contracts.selectedContractId}" required="true">
+                <f:selectItem itemLabel="-- select contract --" itemValue="#{null}"/>
+                <f:selectItems value="#{contracts.allContracts}"
+                               var="contract"
+                               itemValue="#{contract.id}"
+                               itemLabel="Contract #{contract.id}, client #{contract.client.name}, version #{contract.version}, type #{contract.membershipType}"/>
+            </h:selectOneMenu>
+        </h:panelGrid>
+
+        <h:commandButton value="Load selected contract for editing"
+                         action="#{contracts.loadSelectedContractForEditing}"/>
+
+        <h:panelGroup rendered="#{not empty contracts.loadedContractId}">
+            <h3>Loaded Editing Snapshot</h3>
+
+            <h:panelGrid columns="2">
+                <h:outputLabel value="Loaded contract id:"/>
+                <h:outputText value="#{contracts.loadedContractId}"/>
+
+                <h:outputLabel value="Loaded version:"/>
+                <h:outputText value="#{contracts.loadedContractVersion}"/>
+
+                <h:outputLabel value="Client:"/>
+                <h:outputText value="#{contracts.loadedContractClientName}"/>
+
+                <h:outputLabel value="Starts on:"/>
+                <h:outputText value="#{contracts.loadedContractStartsOn}"/>
+
+                <h:outputLabel value="Membership type to save:"/>
+                <h:inputText value="#{contracts.editedMembershipType}" required="true"/>
+
+                <h:outputLabel value="Active:"/>
+                <h:selectBooleanCheckbox value="#{contracts.editedActive}"/>
+            </h:panelGrid>
+
+            <br/>
+
+            <h:commandButton value="Save loaded contract"
+                             action="#{contracts.saveLoadedContract}"/>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{not empty contracts.optimisticLockDemoMessage}">
+            <h3>Result</h3>
+            <pre>#{contracts.optimisticLockDemoMessage}</pre>
+        </h:panelGroup>
+    </h:form>
+
+    <hr/>
+
+    <h2>Existing Contracts</h2>
+
+    <h:dataTable value="#{contracts.allContracts}" var="contract" border="1">
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            #{contract.id}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Version</f:facet>
+            #{contract.version}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Client</f:facet>
+            #{contract.client.name}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Membership Type</f:facet>
+            #{contract.membershipType}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Starts On</f:facet>
+            #{contract.startsOn}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Active</f:facet>
+            #{contract.active}
+        </h:column>
+    </h:dataTable>
+
+    <br/>
+    <h:link value="Back to Index" outcome="index"/>
+</h:body>
+</html>
