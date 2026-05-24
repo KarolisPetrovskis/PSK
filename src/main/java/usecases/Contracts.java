@@ -186,6 +186,10 @@ public class Contracts implements Serializable {
         return null;
     }
 
+    public void refresh() {
+        loadData();
+    }
+
     private void clearEditingForm() {
         selectedContractId = null;
         loadedContractId = null;
