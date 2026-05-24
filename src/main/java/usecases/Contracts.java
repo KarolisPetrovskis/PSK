@@ -112,15 +112,7 @@ public class Contracts implements Serializable {
         editedMembershipType = contract.getMembershipType();
         editedActive = contract.isActive();
 
-        optimisticLockDemoMessage =
-                "Contract was loaded into the form.\n" +
-                "Loaded contract id: " + loadedContractId + "\n" +
-                "Loaded version: " + loadedContractVersion + "\n\n" +
-                "Manual optimistic locking demo:\n" +
-                "1. Open this page in another browser or incognito window.\n" +
-                "2. Load the same contract there.\n" +
-                "3. Save it there first.\n" +
-                "4. Come back to this window and save the stale loaded contract.";
+        optimisticLockDemoMessage = "";
 
         return null;
     }
@@ -157,7 +149,6 @@ public class Contracts implements Serializable {
 
             optimisticLockDemoMessage =
                     "Contract was saved successfully.\n" +
-                    "No OptimisticLockException occurred because the loaded version still matched the DB version.\n" +
                     "New version: " + loadedContractVersion;
 
         } catch (OptimisticLockException exception) {
@@ -169,15 +160,7 @@ public class Contracts implements Serializable {
                     "Exception type:\n" +
                     exception.getClass().getName() + "\n\n" +
                     "Exception message:\n" +
-                    exception.getMessage() + "\n\n" +
-                    "Current transaction:\n" +
-                    "after OptimisticLockException, the current transaction is marked rollback-only.\n" +
-                    "It cannot be used to successfully commit more changes.\n\n" +
-                    "Current EntityManager:\n" +
-                    "the EntityManager itself is not necessarily closed, but its persistence context may contain stale data.\n" +
-                    "Therefore we clear it and do not reuse the stale Contract instance.\n\n" +
-                    "How to save after OptimisticLockException:\n" +
-                    "reload the contract again, apply the desired change to the fresh version, and save again.";
+                    exception.getMessage() + "\n\n";
 
             clearEditingForm();
         }
