@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>CDI Glass-box Extensibility Demo</title>
+</h:head>
+<h:body>
+    <h1>CDI Glass-box Extensibility Demo</h1>
+
+    <h2>1. CDI Alternative</h2>
+    <p>
+        Demonstrates <code>@Alternative</code>. The selected alternative is configured in
+        <code>WEB-INF/beans.xml</code>.
+    </p>
+    <p>
+        Result:
+        <strong>#{extensibilityDemo.alternativeResult}</strong>
+    </p>
+
+    <hr/>
+
+    <h2>2. CDI Specialization</h2>
+    <p>
+        Demonstrates <code>@Specializes</code>. The specialized bean replaces the base bean.
+    </p>
+    <p>
+        Result:
+        <strong>#{extensibilityDemo.specializationResult}</strong>
+    </p>
+
+    <hr/>
+
+    <h2>3. CDI Interceptor</h2>
+    <p>
+        Demonstrates CDI interceptor enabled in <code>beans.xml</code>.
+        Check the server console/logs for interceptor messages.
+    </p>
+    <p>
+        Result:
+        <strong>#{extensibilityDemo.interceptorResult}</strong>
+    </p>
+
+    <hr/>
+
+    <h2>4. CDI Decorator</h2>
+    <p>
+        Demonstrates CDI decorator enabled in <code>beans.xml</code>.
+    </p>
+    <p>
+        Result:
+        <strong>#{extensibilityDemo.decoratorResult}</strong>
+    </p>
+
+    <br/>
+    <h:link value="Back to Index" outcome="index"/>
+</h:body>
+</html>

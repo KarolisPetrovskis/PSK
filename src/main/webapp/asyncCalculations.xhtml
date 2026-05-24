@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Asynchronous Calculation Demo</title>
+</h:head>
+<h:body>
+    <h1>Asynchronous Communication Demo</h1>
+
+    <p>
+        This page demonstrates correct communication with a long-running asynchronous component.
+        The request starts the job, but the calculation continues in another thread.
+    </p>
+
+    <h:form>
+        <h2>Start Long Calculation</h2>
+
+        <h:panelGrid columns="2">
+            <h:outputLabel value="Steps:"/>
+            <h:inputText value="#{asyncCalculations.steps}" required="true"/>
+
+            <h:outputLabel value="Sleep per step, ms:"/>
+            <h:inputText value="#{asyncCalculations.sleepMillis}" required="true"/>
+        </h:panelGrid>
+
+        <br/>
+
+        <h:commandButton value="Start calculation"
+                         action="#{asyncCalculations.startCalculation}"/>
+
+        <h:commandButton value="Refresh status"
+                         action="#{asyncCalculations.refresh}"/>
+    </h:form>
+
+    <hr/>
+
+    <h2>Current Job</h2>
+
+    <h:panelGroup rendered="#{empty asyncCalculations.currentJob}">
+        <p>No current job.</p>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{not empty asyncCalculations.currentJob}">
+        <h:panelGrid columns="2" border="1">
+            <h:outputText value="Job id:"/>
+            <h:outputText value="#{asyncCalculations.currentJob.id}"/>
+
+            <h:outputText value="Status:"/>
+            <h:outputText value="#{asyncCalculations.currentJob.status}"/>
+
+            <h:outputText value="Progress:"/>
+            <h:outputText value="#{asyncCalculations.currentJob.progress}%"/>
+
+            <h:outputText value="Result:"/>
+            <h:outputText value="#{asyncCalculations.currentJob.result}"/>
+
+            <h:outputText value="Message:"/>
+            <h:outputText value="#{asyncCalculations.currentJob.message}"/>
+
+            <h:outputText value="Started at:"/>
+            <h:outputText value="#{asyncCalculations.currentJob.startedAt}"/>
+
+            <h:outputText value="Finished at:"/>
+            <h:outputText value="#{asyncCalculations.currentJob.finishedAt}"/>
+        </h:panelGrid>
+    </h:panelGroup>
+
+    <hr/>
+
+    <h2>All Jobs</h2>
+
+    <h:dataTable value="#{asyncCalculations.allJobs}" var="job" border="1">
+        <h:column>
+            <f:facet name="header">ID</f:facet>
+            #{job.id}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Status</f:facet>
+            #{job.status}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Progress</f:facet>
+            #{job.progress}%
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Result</f:facet>
+            #{job.result}
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">Message</f:facet>
+            #{job.message}
+        </h:column>
+    </h:dataTable>
+
+    <br/>
+    <h:link value="Back to Index" outcome="index"/>
+</h:body>
+</html>

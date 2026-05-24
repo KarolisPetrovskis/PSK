@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>REST Gyms Demo</title>
+</h:head>
+<h:body>
+    <h1>RESTful Gyms Demo</h1>
+
+    <p>
+        This page demonstrates RESTful operations for the Gym entity:
+        <strong>GET</strong>, <strong>POST</strong> and <strong>PUT</strong>.
+    </p>
+
+    <hr/>
+
+    <h2>GET all gyms</h2>
+
+    <button type="button" onclick="getAllGyms()">GET /gyms</button>
+
+    <hr/>
+
+    <h2>GET gym by id</h2>
+
+    <label for="getGymId">Gym id:</label>
+    <input id="getGymId" type="number"/>
+
+    <button type="button" onclick="getGymById()">GET /gyms/{id}</button>
+
+    <hr/>
+
+    <h2>POST create gym</h2>
+
+    <label for="createGymName">Gym name:</label>
+    <input id="createGymName" type="text" value="REST Created Gym"/>
+
+    <button type="button" onclick="createGym()">POST /gyms</button>
+
+    <hr/>
+
+    <h2>PUT update gym</h2>
+
+    <label for="updateGymId">Gym id:</label>
+    <input id="updateGymId" type="number"/>
+
+    <label for="updateGymName">New gym name:</label>
+    <input id="updateGymName" type="text" value="REST Updated Gym"/>
+
+    <button type="button" onclick="updateGym()">PUT /gyms/{id}</button>
+
+    <hr/>
+
+    <h2>DELETE gym</h2>
+
+    <label for="deleteGymId">Gym id:</label>
+    <input id="deleteGymId" type="number"/>
+
+    <button type="button" onclick="deleteGym()">DELETE /gyms/{id}</button>
+
+    <hr/>
+
+    <h2>Response</h2>
+
+    <pre id="responseOutput"
+         style="border: 1px solid #cccccc; padding: 1rem; min-height: 10rem; white-space: pre-wrap;">
+No request executed yet.
+    </pre>
+
+    <br/>
+    <h:link value="Back to Index" outcome="index"/>
+
+    <script type="text/javascript">
+        const apiBaseUrl = '#{request.contextPath}/rest/gyms';
+
+        function showResponse(title, status, body) {
+            const output = document.getElementById('responseOutput');
+
+            output.textContent =
+                title + '\n\n' +
+                'HTTP status: ' + status + '\n\n' +
+                'Response body:\n' +
+                body;
+        }
+
+        function showError(title, error) {
+            const output = document.getElementById('responseOutput');
+
+            output.textContent =
+                title + '\n\n' +
+                'Request failed:\n' +
+                error;
+        }
+
+        async function getAllGyms() {
+            try {
+                const response = await fetch(apiBaseUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const body = await response.text();
+
+                showResponse('GET all gyms', response.status, formatJson(body));
+            } catch (error) {
+                showError('GET all gyms', error);
+            }
+        }
+
+        async function getGymById() {
+            const id = document.getElementById('getGymId').value;
+
+            if (!id) {
+                showError('GET gym by id', 'Please enter gym id.');
+                return;
+            }
+
+            try {
+                const response = await fetch(apiBaseUrl + '/' + id, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const body = await response.text();
+
+                showResponse('GET gym by id', response.status, formatJson(body));
+            } catch (error) {
+                showError('GET gym by id', error);
+            }
+        }
+
+        async function createGym() {
+            const name = document.getElementById('createGymName').value;
+
+            if (!name) {
+                showError('POST create gym', 'Please enter gym name.');
+                return;
+            }
+
+            try {
+                const response = await fetch(apiBaseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name
+                    })
+                });
+
+                const body = await response.text();
+
+                showResponse('POST create gym', response.status, formatJson(body));
+            } catch (error) {
+                showError('POST create gym', error);
+            }
+        }
+
+        async function updateGym() {
+            const id = document.getElementById('updateGymId').value;
+            const name = document.getElementById('updateGymName').value;
+
+            if (!id) {
+                showError('PUT update gym', 'Please enter gym id.');
+                return;
+            }
+
+            if (!name) {
+                showError('PUT update gym', 'Please enter new gym name.');
+                return;
+            }
+
+            try {
+                const response = await fetch(apiBaseUrl + '/' + id, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name
+                    })
+                });
+
+                const body = await response.text();
+
+                showResponse('PUT update gym', response.status, formatJson(body));
+            } catch (error) {
+                showError('PUT update gym', error);
+            }
+        }
+
+        async function deleteGym() {
+            const id = document.getElementById('deleteGymId').value;
+
+            if (!id) {
+                showError('DELETE gym', 'Please enter gym id.');
+                return;
+            }
+
+            if (!confirm('Delete gym with id ' + id + '?')) {
+                showResponse('DELETE gym', 'cancelled', 'Delete was cancelled.');
+                return;
+            }
+
+            try {
+                const response = await fetch(apiBaseUrl + '/' + id, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'text/plain'
+                    }
+                });
+
+                const body = await response.text();
+
+                showResponse('DELETE gym', response.status, body || '[empty response body]');
+
+                if (response.ok) {
+                    await getAllGyms();
+                }
+            } catch (error) {
+                showError('DELETE gym', error);
+            }
+        }
+
+        function formatJson(text) {
+            if (!text) {
+                return '[empty response body]';
+            }
+
+            try {
+                return JSON.stringify(JSON.parse(text), null, 2);
+            } catch (error) {
+                return text;
+            }
+        }
+    </script>
+</h:body>
+</html>

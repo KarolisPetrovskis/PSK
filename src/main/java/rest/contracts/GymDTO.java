@@ -5,5 +5,8 @@ import lombok.Setter;
 
 @Getter @Setter
 public class GymDTO {
+
+    private Long id;
+
     private String name;
 }
