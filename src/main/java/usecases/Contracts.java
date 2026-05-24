@@ -27,6 +27,9 @@ public class Contracts implements Serializable {
     @Inject
     private ClientDAO clientDAO;
 
+    @Inject
+    private ContractUpdateService contractUpdateService;
+
     @Getter
     private List<Contract> allContracts;
 
@@ -99,6 +102,7 @@ public class Contracts implements Serializable {
         Contract contract = contractDAO.findOne(selectedContractId);
 
         if (contract == null) {
+            clearEditingForm();
             optimisticLockDemoMessage = "Contract was not found.";
             clearEditingForm();
             return null;
@@ -117,7 +121,6 @@ public class Contracts implements Serializable {
         return null;
     }
 
-    @Transactional
     public String saveLoadedContract() {
         optimisticLockDemoMessage = null;
 
@@ -126,43 +129,58 @@ public class Contracts implements Serializable {
             return null;
         }
 
-        Client client = clientDAO.findOne(loadedContractClientId);
-
-        if (client == null) {
-            optimisticLockDemoMessage = "Client of loaded contract was not found.";
-            return null;
-        }
-
-        Contract detachedContract = new Contract();
-        detachedContract.setId(loadedContractId);
-        detachedContract.setVersion(loadedContractVersion);
-        detachedContract.setClient(client);
-        detachedContract.setStartsOn(loadedContractStartsOn);
-        detachedContract.setMembershipType(editedMembershipType);
-        detachedContract.setActive(editedActive);
-
         try {
-            Contract savedContract = contractDAO.update(detachedContract);
-            contractDAO.flush();
-
-            loadedContractVersion = savedContract.getVersion();
+            loadedContractVersion = contractUpdateService.saveLoadedContract(
+                    loadedContractId,
+                    loadedContractVersion,
+                    loadedContractClientId,
+                    loadedContractStartsOn,
+                    editedMembershipType,
+                    editedActive
+            );
 
             optimisticLockDemoMessage =
                     "Contract was saved successfully.\n" +
                     "New version: " + loadedContractVersion;
 
+            loadData();
+
         } catch (OptimisticLockException exception) {
             contractDAO.clear();
 
-            optimisticLockDemoMessage =
-                    "OptimisticLockException was caught.\n\n" +
-                    "The form tried to save stale version: " + loadedContractVersion + ".\n\n" +
-                    "Exception type:\n" +
-                    exception.getClass().getName() + "\n\n" +
-                    "Exception message:\n" +
-                    exception.getMessage() + "\n\n";
+            try {
+                contractUpdateService.reloadAndSaveAfterOptimisticLockException(
+                        loadedContractId,
+                        editedMembershipType
+                );
 
-            clearEditingForm();
+                optimisticLockDemoMessage =
+                        "OptimisticLockException was caught.\n\n" +
+                        "The form tried to save stale version: " + loadedContractVersion + ".\n\n" +
+                        "Exception type:\n" +
+                        exception.getClass().getName() + "\n\n" +
+                        "Exception message:\n" +
+                        exception.getMessage() + "\n\n" +
+                        "A new transaction was started after the exception.\n" +
+                        "The latest contract was reloaded and membership type was saved anyway.";
+
+                loadData();
+                clearEditingForm();
+
+            } catch (RuntimeException recoveryException) {
+                optimisticLockDemoMessage =
+                        "OptimisticLockException was caught, but recovery save failed.\n\n" +
+                        "Original exception type:\n" +
+                        exception.getClass().getName() + "\n\n" +
+                        "Original exception message:\n" +
+                        exception.getMessage() + "\n\n" +
+                        "Recovery exception type:\n" +
+                        recoveryException.getClass().getName() + "\n\n" +
+                        "Recovery exception message:\n" +
+                        recoveryException.getMessage();
+
+                clearEditingForm();
+            }
         }
 
         return null;
